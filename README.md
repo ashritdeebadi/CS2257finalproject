@@ -153,6 +153,14 @@ sh.addShard( "shardReplSet3/ec2-3-87-191-219.compute-1.amazonaws.com:27021,ec2-1
 
 ```
 
+By doing this we set up a mongo cluster 
+
+
+2. Import the Data 
+
+We download the dataset from Kaggle  https://raw.githubusercontent.com/ozlerhakan/mongodb-json-files/master/datasets/city_inspections.json
+
+
 ```
 mkdir
 ```
