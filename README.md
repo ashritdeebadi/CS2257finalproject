@@ -161,6 +161,33 @@ By doing this we set up a mongo cluster
 We download the dataset from Kaggle  https://raw.githubusercontent.com/ozlerhakan/mongodb-json-files/master/datasets/city_inspections.json
 
 
+We create a database 
+
+```
+use youtubedb;
+
+db.createUser({
+    user: 'ashrit',
+    pwd: 'xxxx',
+    roles: [{ role: 'readWrite', db:'youtubedb'}]
+})
+
+```
+We enable sharding and add 'trending_date' as the shard key
+
+```
+sh.enableSharding("youtubedb")
+
+sh.shardCollection("youtubedb.youtubestat", { "trending_date" : 1 } )
+
+```
+
+We import the data into the collection 
+
+```
+mongoimport -u ashrit -p xxxx --db youtubedb --collection youtubestat --file CAvideos.json --jsonArray --batchSize 100
+```
+
 ```
 mkdir
 ```
