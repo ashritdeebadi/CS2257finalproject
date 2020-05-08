@@ -204,7 +204,7 @@ AWS REGION: N. Virginia (us-east-1)
 * Wait for the function to be created.
 * In the Function Code section, Click on the drop down under Code Entry Type and choose upload a .zip file and upload the home.zip file.
 * Click save at the top right of the console.
-* Repeat the same process for query.zip with the lambda name as "query".
+* Repeat the same process for query.zip with the lambda name as "query" and upload the query.zip file.
 
 ## API Gateway Configuration:
 * Open AWS Console and navigate to API Gateway Console.
@@ -232,16 +232,59 @@ AWS REGION: N. Virginia (us-east-1)
 * Click on 'Stages' in the left column and click on the stage that was created under stages.
 * Click on Invoke URL to open the webpage. Wait for sometime if the page does not load and try again by clicking the link.
 
+## Setting up AWS Athena
+* Open AWS Console and navigate to S3 console.
+* Click on the create bucket button. Give a valid name to the bucket and click on create bucket.
+* Once the bucket is created, click on it and upload the provided CSV files.
+* Navigate to the Athena console.
+* In the query window, run the query:
+```
+CREATE EXTERNAL TABLE `youtubestat`(
+  `sr` int, 
+  `no` int, 
+  `video_id` string, 
+  `trending_date` string, 
+  `title` string, 
+  `channel_title` string, 
+  `category_id` tinyint, 
+  `publish_time` string, 
+  `tags` string, 
+  `views` bigint, 
+  `likes` bigint, 
+  `dislikes` bigint, 
+  `comment_count` bigint, 
+  `thumbnail_link` string, 
+  `comments_disabled` boolean, 
+  `ratings_disabled` boolean, 
+  `video_error_or_removed` boolean, 
+  `description` string, 
+  `country` string)
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\t' 
+  MAP KEYS TERMINATED BY '\u0003' 
+WITH SERDEPROPERTIES ( 
+  'collection.delim'='\u0002') 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  's3://dbsp-project/'
+TBLPROPERTIES (
+  'has_encrypted_data'='false')
+```
+This will create a new table in Athena that will be used by the lambda functions.
+
 # Results
 1. Query 1: Most viewed category
-![Query1](/images/query1.png)
+![Query1](/images/query1.PNG)
 2. Query 2: Top 10 videos with highest number of likes grouped by country and date
-![Query2](/images/query2.png)
+![Query2](/images/query2.PNG)
 3. Query 3: Top 10 videos with highest number of dislikes grouped by country and date
-![Query3](/images/query3.png)
+![Query3](/images/query3.PNG)
 4. Query 4: Top 10 videos with highest number of comments grouped by country and date
-![Query4](/images/query4.png)
+![Query4](/images/query4.PNG)
 5. Query 5: Top 10 videos with highest number of engagement grouped by country and date
-![Query5](/images/query5.png)
+![Query5](/images/query5.PNG)
 6. Performance Graph
 ![Graph](/images/graph.JPG)
