@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>CS 257</title>
+	<style>
+	body {
+		text-align: center;
+  		font-family: Arial;
+	}
+
+	th, td {
+  		border: 1px solid black;
+	}
+
+	th, td {
+  		padding: 10px;
+	}
+
+	.tables .table {
+		display: inline-block;
+		width: 50%;
+	}
+
+	.container2 {
+		margin: auto;
+		width: 60%;
+		align-items: center;
+	}
+
+	.page .container2 .img {
+		margin-left: auto;
+  		margin-right: auto;
+  		width: 60%
+  		display: block;
+	}
+	.container {
+		margin: auto;
+		width: 60%;
+		align-items: center;
+	}
+
+	.left {
+		width: 50%;
+  		float: left;
+	}
+	.right {
+		float: left;
+	}
+	</style>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<script type="text/javascript">
+	    
+	    var flag = false;
+	    function sendMongo(){
+	        if(flag){
+	           swal("Please Wait", "A request is currently executing. Please wait until it finishes", "error");
+	           return;
+	        }
+	        document.getElementById("mongo-table").style.display = "none";
+	        document.getElementById("time-mongo").innerHTML = '0 seconds';
+	        flag = true;
+            var req = new XMLHttpRequest();
+			req.open('POST', '/test/query');
+			req.setRequestHeader('Content-Type', 'application/json');
+			req.onload = function(){
+				headers = {'q2': 'Likes', 'q3': 'Dislikes', 'q4':'Comments', 'q5': 'Engagement'};
+				var x = JSON.parse(req.response)
+				console.log(x);
+				flag = false;
+				if(document.getElementById("queries").value == 'q1'){
+					var tableContent = "<tr><th>Date</th><th>Country</th><th>Category</th><th>Count</th>";	
+				}
+				else{
+				var tableContent = "<tr><th>Date</th><th>Country</th><th>Title</th><th>" + headers[document.getElementById("queries").value] + "</th>";
+				}
+				for(var k in x['results']){
+					var curr = x['results'][k];
+					rowspan1 = Object.keys(curr).length;
+					rowspan2 = curr['IN'].length;
+					tableContent = tableContent + "<tr>";
+					tableContent = tableContent + "<td rowspan=\"" + rowspan1*rowspan2 + "\">" + k + "</td>";
+					for(country in curr){
+						var curr2 = curr[country]
+						tableContent = tableContent + "<td rowspan=\"" + rowspan2 + "\">" + country + "</td>";
+						for (i in curr2){
+							if (document.getElementById("queries").value == 'q1'){
+								tableContent = tableContent + "<td>" + curr2[i]['category_id'] + "</td>";
+							} else {
+								tableContent = tableContent + "<td>" + curr2[i]['title'] + "</td>";
+							}
+							if(document.getElementById("queries").value == 'q5')
+								tableContent = tableContent + "<td>" + curr2[i]['engagement'] + "</td></tr><tr>";
+							else {
+								tableContent = tableContent + "<td>" + curr2[i]['count'] + "</td></tr><tr>";
+							}
+						}
+					}
+					// 	tableContent = tableContent + "<td>" + curr['top'][i]['title'] + "</td>";
+					// 	tableContent = tableContent + "<td>" + curr['top'][i]['count'] + "</td></tr><tr>"; 
+					// }
+					// tableContent = tableContent + "</tr>";
+
+				}
+				document.getElementById("mongo-table").innerHTML = tableContent;
+				document.getElementById("mongo-table").style.display = 'table';
+				document.getElementById("mongo-table").style.float = 'left';
+				document.getElementById("mongo-table").style.tableLayout = "fixed";
+				document.getElementById("mongo-table").style.width = '50%';
+				document.getElementById("time-mongo").innerHTML = x['time'].toString() + ' seconds';
+			}
+			req.send(JSON.stringify({"type": "mongo", "query": document.getElementById("queries").value}));
+			
+	    }
+	    
+	    function sendHive(){
+	        if(flag){
+	           swal("Please Wait", "A request is currently executing. Please wait until it finishes", "error");
+	           return;
+	        }
+	        document.getElementById("hive-table").style.display = "none";
+	        document.getElementById("time-hive").innerHTML = '0 seconds';
+	        flag = true;
+	        
+            var req = new XMLHttpRequest();
+			req.open('POST', '/test/query');
+			req.setRequestHeader('Content-Type', 'application/json');
+			req.onload = function(){
+				headers = {'q2': 'Likes', 'q3': 'Dislikes', 'q4':'Comments', 'q5': 'Engagement'}
+				var x = JSON.parse(req.response);
+				console.log(x);
+				flag = false;
+				if(document.getElementById("queries").value == 'q1'){
+					var tableContent = "<tr><th>Date</th><th>Country</th><th>Category</th><th>Count</th>";	
+				}
+				else{
+				var tableContent = "<tr><th>Date</th><th>Country</th><th>Title</th><th>" + headers[document.getElementById("queries").value] + "</th>";
+				}
+				for(var k in x['results']){
+					var curr = x['results'][k];
+					rowspan1 = Object.keys(curr).length;
+					rowspan2 = curr['CA'].length;
+					console.log('R1', rowspan1, 'R2', rowspan2);
+					tableContent = tableContent + "<tr>";
+					tableContent = tableContent + "<td rowspan=\"" + rowspan1*rowspan2 + "\">" + k + "</td>";
+					for(country in curr){
+						var curr2 = curr[country]
+						tableContent = tableContent + "<td rowspan=\"" + rowspan2 + "\">" + country + "</td>";
+						for (i in curr2){
+							if (document.getElementById("queries").value == 'q1'){
+								tableContent = tableContent + "<td>" + curr2[i]['category_id'] + "</td>";
+							} else {
+								tableContent = tableContent + "<td>" + curr2[i]['title'] + "</td>";
+							}
+							tableContent = tableContent + "<td>" + curr2[i]['count'] + "</td></tr><tr>";
+						}
+					}
+				}
+				document.getElementById("hive-table").innerHTML = tableContent;
+				document.getElementById("hive-table").style.display = 'table';
+				document.getElementById("hive-table").style.float = 'left';
+				document.getElementById("hive-table").style.tableLayout = "fixed";
+				document.getElementById("hive-table").style.width = '50%';
+				document.getElementById("time-hive").innerHTML = x['time'] + ' seconds';
+			}
+			req.send(JSON.stringify({"type": "hive", "query": document.getElementById("queries").value}));
+	    }
+	    
+	
+	</script>
+</head>
+<body>
+<div class="page">
+	<select id="queries">
+		<option value="q1">Most viewed category</option>
+  		<option value="q2">Top 10 videos ranked by likes</option>
+  		<option value="q3">Top 10 videos ranked by dislikes</option>
+  		<option value="q4">Top 10 videos ranked by comments</option>
+  		<option value="q5">Top 10 videos ranked by engagement</option>
+	</select>
+<div class="container">
+	<div class="left" id="mongo-div">
+		<h1>Mongo</h1>
+	    <h1 id="time-mongo"> 0 seconds </h1>
+		<input type="button" name="submit" id="mongo" value="Go!" onclick="sendMongo();">
+	</div>
+	<div class="right" id="hive-div">
+		<h1>Hive</h1>
+	    <h1 id="time-hive"> 0 seconds </h1>
+		<input type="button" name="submit" id="hive" value="Go!" onclick="sendHive();">
+	</div>
+</div>
+<div class="tables">
+<table hidden id="mongo-table" style="float: left; width: 50%"></table>
+<table hidden id="hive-table" style="float: left; width: 50%"></table>
+</div>
+</body>
+</html>
