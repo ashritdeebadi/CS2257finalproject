@@ -277,14 +277,14 @@ This will create a new table in Athena that will be used by the lambda functions
 
 # Results
 1. Query 1: Most viewed category
-![Query1](/images/query1.PNG)
+![Query1](/images/query1.png)
 2. Query 2: Top 10 videos with highest number of likes grouped by country and date
-![Query2](/images/query2.PNG)
+![Query2](/images/query2.png)
 3. Query 3: Top 10 videos with highest number of dislikes grouped by country and date
-![Query3](/images/query3.PNG)
+![Query3](/images/query3.png)
 4. Query 4: Top 10 videos with highest number of comments grouped by country and date
-![Query4](/images/query4.PNG)
+![Query4](/images/query4.png)
 5. Query 5: Top 10 videos with highest number of engagement grouped by country and date
-![Query5](/images/query5.PNG)
+![Query5](/images/query5.png)
 6. Performance Graph
 ![Graph](/images/graph.JPG)
