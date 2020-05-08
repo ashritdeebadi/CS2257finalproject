@@ -191,3 +191,57 @@ mongoimport -u ashrit -p xxxx --db youtubedb --collection youtubestat --file CAv
 ```
 mkdir
 ```
+
+
+# Setting up AWS API Gateway and AWS Lambda
+You will need an account on AWS to follow these steps
+AWS REGION: N. Virginia (us-east-1)
+## Lambda Configuration:
+* Open AWS Console and navigate to AWS Lambda console
+* Click on create function. Enter name as "home". 
+* Choose runtime as Python 3.6
+* Click create function.
+* Wait for the function to be created.
+* In the Function Code section, Click on the drop down under Code Entry Type and choose upload a .zip file and upload the home.zip file.
+* Click save at the top right of the console.
+* Repeat the same process for query.zip with the lambda name as "query".
+
+## API Gateway Configuration:
+* Open AWS Console and navigate to API Gateway Console.
+* Click on Create API
+* Click on Build under REST API
+* Give a name to the API and click Create API
+* Click on Actions > Create Method. Choose 'GET' in the new dropdown that has appeared and click on tickmark.
+* Type "home" in Lambda Function and click on save. Click OK for the pop up.
+* Click on "Method Response". Open the 200 status code and click "Add Header" and type "Content-Type" and click on tickmark.
+* Go back using the "<-Method execution" link at the top.
+* Choose Integration Response > Open the response status > Open Header Mappings and edit "Content-Type" header. Type in "'text/html'"(single quotes are necessary) and click on the tickmark.
+* Click on Mapping template and add mapping template. Again type 'text/html'. In the textbox on the right, type:
+ ```
+ "$input.path('$')" (without double quotes)
+```
+* Click Save
+* Click on Actions > Create Resource.
+* Enter "query" in resource name. Check the "Enable API Gateway CORS" checkbox and click Create Resource.
+* Select the newly created resource and click on Actions > Create Method. Choose 'POST' in the new dropdown that has appeared and click on tickmark.
+* Type "query" in Lambda Function and click on save. Click OK for the pop up.
+* Click on '/' under resources. Click Actions and choose Enable CORS and click Enable CORS and replace existing CORS headers. Click Yes for the popup.
+* Repeat the same procedure for '/query' resource.
+* Click on Actions > Deploy API
+* In Deployment Stage choose [New Stage]. Enter a name for the stage and click Deploy.
+* Click on 'Stages' in the left column and click on the stage that was created under stages.
+* Click on Invoke URL to open the webpage. Wait for sometime if the page does not load and try again by clicking the link.
+
+# Results
+1. Query 1: Most viewed category
+![Query1](/images/query1.png)
+2. Query 2: Top 10 videos with highest number of likes grouped by country and date
+![Query2](/images/query2.png)
+3. Query 3: Top 10 videos with highest number of dislikes grouped by country and date
+![Query3](/images/query3.png)
+4. Query 4: Top 10 videos with highest number of comments grouped by country and date
+![Query4](/images/query4.png)
+5. Query 5: Top 10 videos with highest number of engagement grouped by country and date
+![Query5](/images/query5.png)
+6. Performance Graph
+![Graph](/images/graph.JPG)
